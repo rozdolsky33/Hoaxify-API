@@ -1,6 +1,7 @@
 package com.hoaxify.user;
 
-import com.hoaxify.enteties.User;
+import com.hoaxify.entity.User;
+import com.hoaxify.response.GenericResponse;
 import com.hoaxify.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +19,8 @@ public class UserController {
         this.userService = userService;
     }
     @PostMapping("/api/v1/users")
-    public void createUser(@RequestBody User user){
+    public GenericResponse createUser(@RequestBody User user){
             userService.save(user);
+            return new GenericResponse("User Saved");
     }
 }

@@ -1,4 +1,4 @@
-package com.hoaxify.enteties;
+package com.hoaxify.entity;
 
 import lombok.*;
 
