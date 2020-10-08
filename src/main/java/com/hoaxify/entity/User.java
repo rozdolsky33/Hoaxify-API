@@ -1,5 +1,6 @@
 package com.hoaxify.entity;
 
+import com.hoaxify.utils.UniqueUsername;
 import lombok.*;
 
 import javax.persistence.*;
@@ -16,6 +17,7 @@ public class User {
 
     @NotNull(message = "{hoaxify.constraints.username.NotNull.message}")
     @Size(min = 4, max = 255)
+    @UniqueUsername
     private String username;
     @NotNull
     @Size(min = 4, max = 255)

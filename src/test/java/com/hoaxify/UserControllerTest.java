@@ -213,6 +213,16 @@ methodName_condition_expectedBehavior
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 
     }
+    @Test
+    public void postUser_whenAnotherUserHasSameUsername_receiveMessageOfDuplicateUsername(){
+        userRepository.save(createValidUser());
+
+        User user = createValidUser();
+        ResponseEntity<ApiError> response = postSingUp(user, ApiError.class);
+        Map<String, String> validationError = response.getBody().getValidationErrors();
+        assertThat(validationError.get("username")).isEqualTo("This name is in use");
+
+    }
 
     public <T> ResponseEntity<T> postSingUp(Object request, Class<T> response){
         return testRestTemplate.postForEntity(API_V_1_USERS, request, response);

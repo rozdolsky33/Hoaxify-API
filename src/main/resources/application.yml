@@ -5,3 +5,10 @@ spring:
     console:
       enabled: true
       path: /h2-console
+# disebeling hibernate validations when persisting the entity
+  jpa:
+    properties:
+      javax:
+        persistence:
+          validation:
+            mode: none
