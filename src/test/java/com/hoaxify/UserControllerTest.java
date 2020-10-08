@@ -205,7 +205,14 @@ methodName_condition_expectedBehavior
         Map<String, String> validationError = response.getBody().getValidationErrors();
         assertThat(validationError.get("password")).isEqualTo("Password must have at least one uppercase, one lowercase and one number");
     }
+    @Test
+    public void postUser_whenAnotherUserHasSameUsername_receiveBadRequest(){
+        userRepository.save(createValidUser());
+        User user = createValidUser();
+        ResponseEntity<Object> response = postSingUp(user, Object.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 
+    }
 
     public <T> ResponseEntity<T> postSingUp(Object request, Class<T> response){
         return testRestTemplate.postForEntity(API_V_1_USERS, request, response);
