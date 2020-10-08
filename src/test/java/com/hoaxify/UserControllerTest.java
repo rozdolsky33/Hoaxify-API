@@ -1,6 +1,7 @@
 package com.hoaxify;
 
 
+import com.hoaxify.error.ApiError;
 import com.hoaxify.repositories.UserRepository;
 import com.hoaxify.entity.User;
 import com.hoaxify.response.GenericResponse;
@@ -158,6 +159,18 @@ methodName_condition_expectedBehavior
         user.setPassword("123456789");
         ResponseEntity<Object> response = postSingUp(user, Object.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+    @Test
+    public void postUser_whenUserIsInvalid_receiveApiError(){
+        User user = new User();
+        ResponseEntity<ApiError> response = postSingUp(user, ApiError.class);
+        assertThat(response.getBody().getUrl()).isEqualTo(API_V_1_USERS);
+    }
+    @Test
+    public void postUser_whenUserIsInvalid_receiveApiErrorWithValidationErrors(){
+        User user = new User();
+        ResponseEntity<ApiError> response = postSingUp(user, ApiError.class);
+        assertThat(response.getBody().getValidationErrors().size()).isEqualTo(3);
     }
 
     public <T> ResponseEntity<T> postSingUp(Object request, Class<T> response){
