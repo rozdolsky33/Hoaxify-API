@@ -17,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -172,6 +173,39 @@ methodName_condition_expectedBehavior
         ResponseEntity<ApiError> response = postSingUp(user, ApiError.class);
         assertThat(response.getBody().getValidationErrors().size()).isEqualTo(3);
     }
+    @Test
+    public void postUser_whenUserHasNullUsername_receiveMessageOfNullErrorFroUsername(){
+        User user = createValidUser();
+        user.setUsername(null);
+        ResponseEntity<ApiError> response = postSingUp(user, ApiError.class);
+        Map<String, String> validationError = response.getBody().getValidationErrors();
+        assertThat(validationError.get("username")).isEqualTo("Username cannot be null");
+    }
+    @Test
+    public void postUser_whenUserHasInvalidLengthUsername_receiveGenericMessageOfSizeError(){
+        User user = createValidUser();
+        user.setUsername("abc");
+        ResponseEntity<ApiError> response = postSingUp(user, ApiError.class);
+        Map<String, String> validationError = response.getBody().getValidationErrors();
+        assertThat(validationError.get("username")).isEqualTo("It must have minimum 4 and maximum 255 characters");
+    }
+    @Test
+    public void postUser_whenUserHasNullPassword_receiveGenericMessageOfNullError(){
+        User user = createValidUser();
+        user.setPassword(null);
+        ResponseEntity<ApiError> response = postSingUp(user, ApiError.class);
+        Map<String, String> validationError = response.getBody().getValidationErrors();
+        assertThat(validationError.get("password")).isEqualTo("Cannot be null");
+    }
+    @Test
+    public void postUser_whenUserInvalidPasswordPattern_receiveMessageOfPasswordPatternError(){
+        User user = createValidUser();
+        user.setPassword("alllowercase");
+        ResponseEntity<ApiError> response = postSingUp(user, ApiError.class);
+        Map<String, String> validationError = response.getBody().getValidationErrors();
+        assertThat(validationError.get("password")).isEqualTo("Password must have at least one uppercase, one lowercase and one number");
+    }
+
 
     public <T> ResponseEntity<T> postSingUp(Object request, Class<T> response){
         return testRestTemplate.postForEntity(API_V_1_USERS, request, response);
