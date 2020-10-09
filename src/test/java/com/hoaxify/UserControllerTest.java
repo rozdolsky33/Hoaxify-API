@@ -1,9 +1,9 @@
 package com.hoaxify;
 
 
+import com.hoaxify.entity.User;
 import com.hoaxify.error.ApiError;
 import com.hoaxify.repositories.UserRepository;
-import com.hoaxify.entity.User;
 import com.hoaxify.response.GenericResponse;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,14 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.sql.ParameterMetaData;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -265,6 +263,24 @@ methodName_condition_expectedBehavior
     public void getUsers_whenPageSizeNotProvided_receivePageSizeAs10(){
         ResponseEntity<TestPage<Object>> response = getUsers(new ParameterizedTypeReference<TestPage<Object>>() {});
         assertThat(response.getBody().getSize()).isEqualTo(10);
+    }
+    @Test
+    public void getUsers_whenPageSizeIsGreaterThan100_receivePageSizeAs100(){
+        String path = API_V_1_USERS + "?size=500";
+        ResponseEntity<TestPage<Object>> response = getUsers(path, new ParameterizedTypeReference<TestPage<Object>>() {});
+        assertThat(response.getBody().getSize()).isEqualTo(100);
+    }
+    @Test
+    public void getUsers_whenPageSizeIsNegative_receivePageSizeAs10(){
+        String path = API_V_1_USERS + "?size=-5";
+        ResponseEntity<TestPage<Object>> response = getUsers(path, new ParameterizedTypeReference<TestPage<Object>>() {});
+        assertThat(response.getBody().getSize()).isEqualTo(10);
+    }
+    @Test
+    public void getUsers_whenPageSizeIsNegative_receiveFirstPage(){
+        String path = API_V_1_USERS + "?size=-5";
+        ResponseEntity<TestPage<Object>> response = getUsers(path, new ParameterizedTypeReference<TestPage<Object>>() {});
+        assertThat(response.getBody().getNumber()).isEqualTo(0);
     }
 
     public <T> ResponseEntity<T> postSingUp(Object request, Class<T> response){

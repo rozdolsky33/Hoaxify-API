@@ -38,7 +38,7 @@ public class UserController {
             return new GenericResponse("User Saved");
     }
     @GetMapping("/users")
-    public Page<UserVM> getUsers(@PageableDefault(size = 10) Pageable page){
+    public Page<UserVM> getUsers(Pageable page){
        return userService.getUsers(page).map(UserVM::new);
     }
 
