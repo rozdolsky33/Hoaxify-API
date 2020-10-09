@@ -36,8 +36,9 @@ public class UserController {
             return new GenericResponse("User Saved");
     }
     @GetMapping("/users")
-    public Page<UserVM> getUsers(){
-       return userService.getUsers().map(UserVM::new);
+    public Page<UserVM> getUsers(@RequestParam(required = false, defaultValue = "0") int currentPage,
+                                 @RequestParam(required = false, defaultValue = "20") int pageSize){
+       return userService.getUsers(currentPage, pageSize).map(UserVM::new);
     }
 
 

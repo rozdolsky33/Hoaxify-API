@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.sql.ParameterMetaData;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -252,12 +253,24 @@ methodName_condition_expectedBehavior
         assertThat(entity.containsKey("password")).isFalse();
     }
 
+    @Test
+    public void getUsers_whenPageIsRequestedFor3ItemsPerPageWhereTheDatabaseHas20user_receive3Users(){
+        IntStream.rangeClosed(1, 20).mapToObj(i -> "test-user-" + i)
+                .map(TestUtil::createValidUser).forEach(userRepository::save);
+        String path = API_V_1_USERS + "?currentPage=0&pageSize=3";
+        ResponseEntity<TestPage<Object>> response = getUsers(path, new ParameterizedTypeReference<TestPage<Object>>() {});
+        assertThat(response.getBody().getContent().size()).isEqualTo(3);
+    }
+
     public <T> ResponseEntity<T> postSingUp(Object request, Class<T> response){
         return testRestTemplate.postForEntity(API_V_1_USERS, request, response);
     }
 
     public<T> ResponseEntity<T> getUsers(ParameterizedTypeReference<T> responseType){
         return testRestTemplate.exchange(API_V_1_USERS, HttpMethod.GET, null, responseType);
+    }
+    public<T> ResponseEntity<T> getUsers(String path, ParameterizedTypeReference<T> responseType){
+        return testRestTemplate.exchange(path, HttpMethod.GET, null, responseType);
     }
 
 }
