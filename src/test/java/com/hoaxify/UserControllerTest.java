@@ -257,9 +257,14 @@ methodName_condition_expectedBehavior
     public void getUsers_whenPageIsRequestedFor3ItemsPerPageWhereTheDatabaseHas20user_receive3Users(){
         IntStream.rangeClosed(1, 20).mapToObj(i -> "test-user-" + i)
                 .map(TestUtil::createValidUser).forEach(userRepository::save);
-        String path = API_V_1_USERS + "?currentPage=0&pageSize=3";
+        String path = API_V_1_USERS + "?page=0&size=3";
         ResponseEntity<TestPage<Object>> response = getUsers(path, new ParameterizedTypeReference<TestPage<Object>>() {});
         assertThat(response.getBody().getContent().size()).isEqualTo(3);
+    }
+    @Test
+    public void getUsers_whenPageSizeNotProvided_receivePageSizeAs10(){
+        ResponseEntity<TestPage<Object>> response = getUsers(new ParameterizedTypeReference<TestPage<Object>>() {});
+        assertThat(response.getBody().getSize()).isEqualTo(10);
     }
 
     public <T> ResponseEntity<T> postSingUp(Object request, Class<T> response){
