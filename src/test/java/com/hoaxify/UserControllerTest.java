@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static com.hoaxify.TestUtil.createValidUser;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -226,14 +227,6 @@ methodName_condition_expectedBehavior
 
     public <T> ResponseEntity<T> postSingUp(Object request, Class<T> response){
         return testRestTemplate.postForEntity(API_V_1_USERS, request, response);
-    }
-
-    private User createValidUser() {
-        User user = new User();
-        user.setUsername("test-user");
-        user.setDisplayName("test-display");
-        user.setPassword("P4ssword");
-        return user;
     }
 
 }
