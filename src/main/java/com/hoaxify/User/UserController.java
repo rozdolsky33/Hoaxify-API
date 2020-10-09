@@ -1,9 +1,8 @@
 package com.hoaxify.user;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.hoaxify.entity.User;
-import com.hoaxify.entity.Views;
 import com.hoaxify.error.ApiError;
+import com.hoaxify.model.UserVM;
 import com.hoaxify.response.GenericResponse;
 import com.hoaxify.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,10 +36,8 @@ public class UserController {
             return new GenericResponse("User Saved");
     }
     @GetMapping("/users")
-    @JsonView(Views.Base.class)
-    public Page<?> getUsers(){
-
-       return userService.getUsers();
+    public Page<UserVM> getUsers(){
+       return userService.getUsers().map(UserVM::new);
     }
 
 
