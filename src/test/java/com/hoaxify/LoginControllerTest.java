@@ -86,11 +86,46 @@ public class LoginControllerTest {
         User inDB = userService.save(createValidUser());
         authenticate();
         ResponseEntity<Map<String, Object>> response = login(new ParameterizedTypeReference<Map<String, Object>>() {});
-
         Map<String, Object> body = response.getBody();
         Integer id = (Integer) response.getBody().get("id");
         assertThat(id).isEqualTo(inDB.getId());
     }
+    @Test
+    public void postLogin_withValidCredentials_receiveLoggedInUserImage(){
+        User inDB = userService.save(createValidUser());
+        authenticate();
+        ResponseEntity<Map<String, Object>> response = login(new ParameterizedTypeReference<Map<String, Object>>() {});
+        Map<String, Object> body = response.getBody();
+        String image = (String) body.get("image");
+        assertThat(image).isEqualTo(inDB.getImage());
+    }
+    @Test
+    public void postLogin_withValidCredentials_receiveLoggedInUserDisplayName(){
+        User inDB = userService.save(createValidUser());
+        authenticate();
+        ResponseEntity<Map<String, Object>> response = login(new ParameterizedTypeReference<Map<String, Object>>() {});
+        Map<String, Object> body = response.getBody();
+        String displayName = (String) body.get("displayName");
+        assertThat(displayName).isEqualTo(inDB.getDisplayName());
+    }
+    @Test
+    public void postLogin_withValidCredentials_receiveLoggedInUsername(){
+        User inDB = userService.save(createValidUser());
+        authenticate();
+        ResponseEntity<Map<String, Object>> response = login(new ParameterizedTypeReference<Map<String, Object>>() {});
+        Map<String, Object> body = response.getBody();
+        String username = (String) body.get("username");
+        assertThat(username).isEqualTo(inDB.getUsername());
+    }
+    @Test
+    public void postLogin_withValidCredentials_notReceiveLoggedInUsersPassword(){
+        User inDB = userService.save(createValidUser());
+        authenticate();
+        ResponseEntity<Map<String, Object>> response = login(new ParameterizedTypeReference<Map<String, Object>>() {});
+        Map<String, Object> body = response.getBody();
+        assertThat(body.containsKey("password")).isFalse();
+    }
+
 
     public <T>ResponseEntity<T>login(Class<T> responseType){
         return testRestTemplate.postForEntity(API_V_1_LOGIN, null, responseType);
