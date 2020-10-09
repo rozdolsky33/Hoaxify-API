@@ -2,7 +2,9 @@ package com.hoaxify.service;
 
 import com.hoaxify.entity.User;
 import com.hoaxify.repositories.UserRepository;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,4 +25,10 @@ public class UserService {
        return userRepository.save(user);
     }
 
+    public Page<?> getUsers() {
+
+        Pageable pageable = PageRequest.of(0, 10);
+
+        return userRepository.findAll(pageable);
+    }
 }
