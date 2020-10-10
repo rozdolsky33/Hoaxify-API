@@ -15,8 +15,9 @@ public class TestUtil {
     }
 
     public static User createValidUser(String username) {
-        User user = new User();
+        User user = createValidUser();
         user.setUsername(username);
+     //   user.setPassword("P4ssword");
         return user;
     }
 }

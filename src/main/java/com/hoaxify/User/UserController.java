@@ -5,6 +5,7 @@ import com.hoaxify.error.ApiError;
 import com.hoaxify.model.UserVM;
 import com.hoaxify.response.GenericResponse;
 import com.hoaxify.service.UserService;
+import com.hoaxify.utils.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,10 +39,15 @@ public class UserController {
             return new GenericResponse("User Saved");
     }
     @GetMapping("/users")
-    public Page<UserVM> getUsers(Pageable page){
-       return userService.getUsers(page).map(UserVM::new);
+    public Page<UserVM> getUsers(@CurrentUser User loggedInUser, Pageable page){
+       return userService.getUsers(loggedInUser, page).map(UserVM::new);
     }
 
+    @GetMapping("/users/{username}")
+    public UserVM getUserByName(@PathVariable String username){
+       User user = userService.getByUsername(username);
+       return new UserVM(user);
+    }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
