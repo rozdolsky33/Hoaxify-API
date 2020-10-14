@@ -337,13 +337,35 @@ methodName_condition_expectedBehavior
         assertThat(response.getBody().getMessage().contains("unknown-user")).isTrue();
     }
 
-    public <T> ResponseEntity<T> postSingUp(Object request, Class<T> response){
-        return testRestTemplate.postForEntity(API_V_1_USERS, request, response);
-    }
     @Test
     public void putUser_whenUnauthorizedUserSendsTheRequest_receiveUnauthorized(){
         ResponseEntity<Object> response = putUser(123, null, Object.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+    }
+    @Test
+    public void putUser_whenUnauthorizedUserSendsUpdateFroAnotherUser_receiveForbidden(){
+        User user = userService.save(TestUtil.createValidUser("user1"));
+        authenticate(user.getUsername());
+        long anotherUser = user.getId()+123;
+        ResponseEntity<Object> response = putUser(anotherUser, null, Object.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+    }
+    @Test
+    public void putUser_whenUnauthorizedUserSendsTheRequest_receiveApiError(){
+        ResponseEntity<ApiError> response = putUser(123, null, ApiError.class);
+        assertThat(response.getBody().getUrl()).contains("users/123");
+    }
+    @Test
+    public void putUser_whenUnauthorizedUserSendsUpdateFroAnotherUser_receiveApiError(){
+        User user = userService.save(TestUtil.createValidUser("user1"));
+        authenticate(user.getUsername());
+        long anotherUser = user.getId() + 123;
+        ResponseEntity<ApiError> response = putUser(anotherUser, null, ApiError.class);
+        assertThat(response.getBody().getUrl()).contains("users/" + anotherUser);
+    }
+
+    public <T> ResponseEntity<T> postSingUp(Object request, Class<T> response){
+        return testRestTemplate.postForEntity(API_V_1_USERS, request, response);
     }
 
     public<T> ResponseEntity<T> getUsers(ParameterizedTypeReference<T> responseType){
