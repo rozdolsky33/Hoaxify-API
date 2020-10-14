@@ -24,8 +24,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.httpBasic().authenticationEntryPoint(new BasicAuthenticationEntryPoint());
 
-        http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/v1/login").authenticated()
-                .and().authorizeRequests().anyRequest().permitAll();
+        http.authorizeRequests()
+                .antMatchers(HttpMethod.POST, "/api/v1/login").authenticated()
+                .antMatchers(HttpMethod.PUT, "/api/v1/users/{id:[0-9]+}").authenticated()
+                .and()
+                .authorizeRequests().anyRequest().permitAll();
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }

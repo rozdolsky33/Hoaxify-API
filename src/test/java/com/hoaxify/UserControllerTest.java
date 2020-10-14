@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -339,6 +340,11 @@ methodName_condition_expectedBehavior
     public <T> ResponseEntity<T> postSingUp(Object request, Class<T> response){
         return testRestTemplate.postForEntity(API_V_1_USERS, request, response);
     }
+    @Test
+    public void putUser_whenUnauthorizedUserSendsTheRequest_receiveUnauthorized(){
+        ResponseEntity<Object> response = putUser(123, null, Object.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+    }
 
     public<T> ResponseEntity<T> getUsers(ParameterizedTypeReference<T> responseType){
         return testRestTemplate.exchange(API_V_1_USERS, HttpMethod.GET, null, responseType);
@@ -349,6 +355,10 @@ methodName_condition_expectedBehavior
     public <T> ResponseEntity<T> getUser(String username, Class<T> responseType){
         String path = API_V_1_USERS + "/" + username;
         return testRestTemplate.getForEntity(path, responseType);
+    }
+    public <T> ResponseEntity<T> putUser(long id, HttpEntity<?>requestEntity, Class<T> responseType){
+        String path = API_V_1_USERS + "/" + id;
+        return testRestTemplate.exchange(path, HttpMethod.PUT, requestEntity, responseType);
     }
 
     private void authenticate(String username) {

@@ -48,6 +48,10 @@ public class UserController {
        User user = userService.getByUsername(username);
        return new UserVM(user);
     }
+    @PutMapping("/users/{id:[0-9]+}")
+    void updateUser(@PathVariable String id){
+
+    }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
