@@ -20,7 +20,7 @@ public class HoaxifyApplication {
 
     //create 15 users on app start
     @Bean
-    @Profile("!test")
+    @Profile("dev") //!test
     CommandLineRunner run(UserService userService){
     return (args) -> {
         IntStream.rangeClosed(1, 15).mapToObj(i -> {
