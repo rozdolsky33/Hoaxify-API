@@ -2,9 +2,9 @@ package com.hoaxify.service;
 
 import com.hoaxify.entity.User;
 import com.hoaxify.error.NotFoundException;
+import com.hoaxify.model.UserUpdateVM;
 import com.hoaxify.repositories.UserRepository;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -39,5 +39,11 @@ public class UserService {
             throw new NotFoundException("User with username + "+ username + " Not Found");
         }
         return inDB;
+    }
+
+    public User update(long id, UserUpdateVM userUpdateVM) {
+        User inDB = userRepository.getOne(id);
+        inDB.setDisplayName(userUpdateVM.getDisplayName());
+        return userRepository.save(inDB);
     }
 }

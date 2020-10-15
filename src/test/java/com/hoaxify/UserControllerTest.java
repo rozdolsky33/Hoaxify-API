@@ -3,6 +3,8 @@ package com.hoaxify;
 
 import com.hoaxify.entity.User;
 import com.hoaxify.error.ApiError;
+import com.hoaxify.model.UserUpdateVM;
+import com.hoaxify.model.UserVM;
 import com.hoaxify.repositories.UserRepository;
 import com.hoaxify.response.GenericResponse;
 import com.hoaxify.service.UserService;
@@ -21,7 +23,6 @@ import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.security.SignedObject;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -362,6 +363,46 @@ methodName_condition_expectedBehavior
         long anotherUser = user.getId() + 123;
         ResponseEntity<ApiError> response = putUser(anotherUser, null, ApiError.class);
         assertThat(response.getBody().getUrl()).contains("users/" + anotherUser);
+    }
+    @Test
+    public void putUser_whenValidRequestBodyFromAuthorizedUser_receiveOk(){
+        User user = userService.save(TestUtil.createValidUser("user1"));
+        authenticate(user.getUsername());
+        UserUpdateVM updateUser = createValidUserUpdateVM();
+        HttpEntity<UserUpdateVM> requestEntity = new HttpEntity<>(updateUser);
+        ResponseEntity<Object> response = putUser(user.getId(), requestEntity, Object.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+    }
+    @Test
+    public void putUser_whenValidRequestBodyFromAuthorizedUser_displayNameUpdated() {
+        User user = userService.save(TestUtil.createValidUser("user1"));
+        authenticate(user.getUsername());
+        UserUpdateVM updateUser = createValidUserUpdateVM();
+
+        HttpEntity<UserUpdateVM> requestEntity = new HttpEntity<>(updateUser);
+        putUser(user.getId(), requestEntity, Object.class);
+
+        User userInDB = userRepository.findByUsername("user1");
+        assertThat(userInDB.getDisplayName()).isEqualTo(updateUser.getDisplayName());
+    }
+
+    @Test
+    public void putUser_whenValidRequestBodyFromAuthorizedUser_receiveUserVMWithUpdatedDisplayName() {
+        User user = userService.save(TestUtil.createValidUser("user1"));
+        authenticate(user.getUsername());
+
+        UserUpdateVM updateUser = createValidUserUpdateVM();
+        HttpEntity<UserUpdateVM> requestEntity = new HttpEntity<>(updateUser);
+        ResponseEntity<UserVM> response = putUser(user.getId(), requestEntity, UserVM.class);
+
+        assertThat(response.getBody().getDisplayName()).isEqualTo(updateUser.getDisplayName());
+    }
+
+    private UserUpdateVM createValidUserUpdateVM() {
+        UserUpdateVM updateUser = new UserUpdateVM();
+        updateUser.setDisplayName("newDisplayName");
+        return updateUser;
     }
 
     public <T> ResponseEntity<T> postSingUp(Object request, Class<T> response){

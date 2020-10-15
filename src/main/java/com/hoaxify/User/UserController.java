@@ -2,6 +2,7 @@ package com.hoaxify.user;
 
 import com.hoaxify.entity.User;
 import com.hoaxify.error.ApiError;
+import com.hoaxify.model.UserUpdateVM;
 import com.hoaxify.model.UserVM;
 import com.hoaxify.response.GenericResponse;
 import com.hoaxify.service.UserService;
@@ -51,7 +52,9 @@ public class UserController {
     }
     @PutMapping("/users/{id:[0-9]+}")
     @PreAuthorize("#id == principal.id")
-    void updateUser(@PathVariable String id){
+    public UserVM updateUser(@PathVariable long id, @RequestBody(required = false) UserUpdateVM userUpdateVM){
+        User updateUser = userService.update(id, userUpdateVM);
+        return new UserVM(updateUser);
 
     }
 
