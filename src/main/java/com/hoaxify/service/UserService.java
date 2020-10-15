@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.UUID;
 
 @Service
@@ -16,11 +17,13 @@ public class UserService {
 
      UserRepository userRepository;
      PasswordEncoder passwordEncoder;
+     FileService fileService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, FileService fileService) {
         super();
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.fileService = fileService;
     }
 
     public User save(User user){
@@ -46,8 +49,15 @@ public class UserService {
     public User update(long id, UserUpdateVM userUpdateVM) {
         User inDB = userRepository.getOne(id);
         inDB.setDisplayName(userUpdateVM.getDisplayName());
-        String saveImageName = inDB.getUsername() + UUID.randomUUID().toString().replaceAll("-", "");
-        inDB.setImage(saveImageName);
+        if (userUpdateVM.getImage() != null) {
+            String saveImageName = null;
+            try {
+                saveImageName = fileService.saveProfileImage(userUpdateVM.getImage());
+                inDB.setImage(saveImageName);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         return userRepository.save(inDB);
     }
 }
