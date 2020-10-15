@@ -17,7 +17,8 @@ spring:
       pageable:
         default-page-size: 10
         max-page-size: 100
-uploadpath: upload-test
+hoaxify:
+  upload-path: uploads-test
 
 
   # configuring Pageable

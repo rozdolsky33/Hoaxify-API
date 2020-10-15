@@ -1,5 +1,6 @@
 package com.hoaxify.configuration;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -16,18 +17,24 @@ web related beans.
 @Configuration
 public class WebConfiguration implements WebMvcConfigurer {
 
-    @Value("${uploadpath}")
-     String uploadPath;
+    @Autowired
+    AppConfiguration appConfiguration;
     // code checking upload folder when test. will create if it doesn't exist
     @Bean
     CommandLineRunner createUploadFolder(){
         return (args) -> {
-            File uploadFolder = new File(uploadPath);
-            boolean uploadFolderExist = uploadFolder.exists() && uploadFolder.isDirectory();
-            if (!uploadFolderExist){
-                uploadFolder.mkdir();
-            }
+            createNonExistingFolder(appConfiguration.getUploadPath());
+            createNonExistingFolder(appConfiguration.getFullProfileImagesPath());
+            createNonExistingFolder(appConfiguration.getFullAttachmentsPath());
         };
+    }
+
+    private void createNonExistingFolder(String path) {
+        File folder = new File(path);
+        boolean folderExist = folder.exists() && folder.isDirectory();
+        if (!folderExist){
+            folder.mkdir();
+        }
     }
 
 }
