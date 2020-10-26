@@ -8,6 +8,7 @@ import com.hoaxify.response.GenericResponse;
 import com.hoaxify.service.UserService;
 import com.hoaxify.utils.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -52,7 +53,7 @@ public class UserController {
     }
     @PutMapping("/users/{id:[0-9]+}")
     @PreAuthorize("#id == principal.id")
-    public UserVM updateUser(@PathVariable long id, @RequestBody(required = false) UserUpdateVM userUpdateVM){
+    public UserVM updateUser(@PathVariable long id, @Valid @RequestBody(required = false) UserUpdateVM userUpdateVM){
         User updateUser = userService.update(id, userUpdateVM);
         return new UserVM(updateUser);
 
