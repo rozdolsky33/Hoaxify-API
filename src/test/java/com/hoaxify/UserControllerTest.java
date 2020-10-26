@@ -534,7 +534,7 @@ methodName_condition_expectedBehavior
     }
 
     private String readFileToBase64(String fileName) throws IOException {
-        ClassPathResource imageResource = new ClassPathResource("profile.png");
+        ClassPathResource imageResource = new ClassPathResource(fileName);
         //convert file into byteArray
         byte[] imageArr = FileUtils.readFileToByteArray(imageResource.getFile());
         String imageString = Base64.getEncoder().encodeToString(imageArr);
