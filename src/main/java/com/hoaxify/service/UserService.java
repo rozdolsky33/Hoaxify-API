@@ -53,6 +53,7 @@ public class UserService {
             String saveImageName = null;
             try {
                 saveImageName = fileService.saveProfileImage(userUpdateVM.getImage());
+                fileService.deleteProfileImage(inDB.getImage());
                 inDB.setImage(saveImageName);
             } catch (IOException e) {
                 e.printStackTrace();

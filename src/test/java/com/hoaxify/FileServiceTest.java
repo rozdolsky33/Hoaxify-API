@@ -3,6 +3,7 @@ package com.hoaxify;
 import com.hoaxify.configuration.AppConfiguration;
 import com.hoaxify.service.FileService;
 import org.apache.commons.io.FileUtils;
+import org.apache.tika.Tika;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
