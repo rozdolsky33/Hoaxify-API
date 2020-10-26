@@ -18,12 +18,9 @@ import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.IntStream;
 
 import static com.hoaxify.TestUtil.createValidUser;
-import static com.hoaxify.UserControllerTest.API_V_1_USERS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)

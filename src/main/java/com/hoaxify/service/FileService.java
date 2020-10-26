@@ -2,6 +2,7 @@ package com.hoaxify.service;
 
 import com.hoaxify.configuration.AppConfiguration;
 import org.apache.commons.io.FileUtils;
+import org.apache.tika.Tika;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -26,5 +27,9 @@ public class FileService {
         File target = new File(appConfiguration.getFullProfileImagesPath() + "/" + imageName);
         FileUtils.writeByteArrayToFile(target, decodedBytes);
         return imageName;
+    }
+    public String detectType(byte[] fileArr) {
+        Tika tika = new Tika();
+        return tika.detect(fileArr);
     }
 }
