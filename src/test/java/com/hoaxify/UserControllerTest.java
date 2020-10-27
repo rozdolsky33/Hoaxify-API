@@ -501,7 +501,6 @@ methodName_condition_expectedBehavior
         ResponseEntity<Object> response = putUser(user.getId(), requestEntity, Object.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
-    // Doesn't work
     @Test
     public void putUser_withValidRequestBodyWithTXTImageFromAuthorizedUser_receiveValidationErrorForProfileImage() throws IOException {
         User user = userService.save(TestUtil.createValidUser("user1"));
