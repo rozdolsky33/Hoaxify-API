@@ -1,7 +1,7 @@
 package com.hoaxify;
 
 import com.hoaxify.entity.User;
-import com.hoaxify.hoax.Hoax;
+import com.hoaxify.entity.Hoax;
 
 public class TestUtil {
 

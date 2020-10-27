@@ -23,7 +23,6 @@ public class ErrorHandler implements ErrorController {
         String message = (String) attributes.get("message");
         String url = (String) attributes.get("path");
         int status = (Integer) attributes.get("status");
-
         return new ApiError(status, message, url);
     }
 
